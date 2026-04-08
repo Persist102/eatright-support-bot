@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "pm2:start": "pm2 start bot.js --name eatright-bot",
+    "pm2:stop": "pm2 stop eatright-bot",
+    "pm2:restart": "pm2 restart eatright-bot",
+    "pm2:logs": "pm2 logs eatright-bot"
   },
   "dependencies": {
+    "dotenv": "^17.4.1",
     "node-telegram-bot-api": "^0.66.0"
   }
 }
