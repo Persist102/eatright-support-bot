@@ -149,10 +149,8 @@ function adminInlineBtn(lang) {
 // ── /start ────────────────────────────────────────────────
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  if (!userState[chatId]) userState[chatId] = { lang: 'uz' };
-  userState[chatId].step = 'menu';
-  const lang = getLang(chatId);
-  bot.sendMessage(chatId, T[lang].welcome, mainKeyboard(lang));
+  userState[chatId] = { lang: 'uz', step: 'chooseLang' };
+  bot.sendMessage(chatId, '🌐 Choose your language / Tilni tanlang / Выберите язык:', langKeyboard());
 });
 
 // ── Xabarlar ──────────────────────────────────────────────
