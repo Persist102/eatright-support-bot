@@ -45,11 +45,25 @@ const T = {
     payRedirect: '💬 По вопросам оплаты обращайтесь напрямую:',
     payBtn:      '💬 Связаться с администратором',
   },
+  en: {
+    welcome:     '👋 Welcome to EatRight Support Bot!\n\nPlease choose an option:',
+    askMsg:      '✍️ Describe your issue in detail and we will reply shortly:',
+    sent:        '✅ Your message has been received! We will get back to you soon.',
+    back:        '⬅️ Back',
+    langPrompt:  'Choose your language:',
+
+    paymentMenu: '💳 Payment section. Please choose an option:',
+    payUzb:      '🇺🇿 Buy from Uzbekistan',
+    payAbroad:   '🌍 Buy from abroad',
+    payProblem:  '⚠️ Payment issue',
+    payRedirect: '💬 For payment issues please contact us directly:',
+    payBtn:      '💬 Contact admin',
+  },
 };
 
 const TOPIC_LABELS = {
-  bug:     { uz: '🐛 Ilova muammosi', ru: '🐛 Проблема с приложением' },
-  suggest: { uz: '💡 Taklif',         ru: '💡 Предложение' },
+  bug:     { uz: '🐛 Ilova muammosi', ru: '🐛 Проблема с приложением', en: '🐛 App issue' },
+  suggest: { uz: '💡 Taklif',         ru: '💡 Предложение',            en: '💡 Suggestion' },
 };
 
 function getLang(chatId) {
@@ -64,6 +78,17 @@ function mainKeyboard(lang) {
         keyboard: [
           [{ text: '🐛 Проблема с приложением' }, { text: '💳 Вопрос по оплате' }],
           [{ text: '💡 Предложение' },             { text: '🌐 Изменить язык' }],
+        ],
+        resize_keyboard: true,
+      },
+    };
+  }
+  if (lang === 'en') {
+    return {
+      reply_markup: {
+        keyboard: [
+          [{ text: '🐛 App issue' },    { text: '💳 Payment question' }],
+          [{ text: '💡 Suggestion' },   { text: '🌐 Change language' }],
         ],
         resize_keyboard: true,
       },
@@ -107,7 +132,7 @@ function backKeyboard(lang) {
 function langKeyboard() {
   return {
     reply_markup: {
-      keyboard: [[{ text: "🇺🇿 O'zbek" }, { text: '🇷🇺 Русский' }]],
+      keyboard: [[{ text: "🇺🇿 O'zbek" }, { text: '🇷🇺 Русский' }, { text: '🇬🇧 English' }]],
       resize_keyboard: true,
     },
   };
@@ -156,6 +181,8 @@ bot.on('message', (msg) => {
       userState[chatId].lang = 'uz';
     } else if (text.includes('Русский')) {
       userState[chatId].lang = 'ru';
+    } else if (text.includes('English')) {
+      userState[chatId].lang = 'en';
     }
     userState[chatId].step = 'menu';
     const nl = getLang(chatId);
@@ -177,10 +204,10 @@ bot.on('message', (msg) => {
   }
 
   // ── Asosiy menyu tanlovlari ──
-  const isPayment = text === "💳 To'lov masalasi" || text === '💳 Вопрос по оплате';
-  const isBug     = text === '🐛 Ilova muammosi'  || text === '🐛 Проблема с приложением';
-  const isSuggest = text === '💡 Taklif'           || text === '💡 Предложение';
-  const isLang    = text.includes('Tilni') || text.includes('Изменить язык');
+  const isPayment = text === "💳 To'lov masalasi" || text === '💳 Вопрос по оплате' || text === '💳 Payment question';
+  const isBug     = text === '🐛 Ilova muammosi'  || text === '🐛 Проблема с приложением' || text === '🐛 App issue';
+  const isSuggest = text === '💡 Taklif'           || text === '💡 Предложение' || text === '💡 Suggestion';
+  const isLang    = text.includes('Tilni') || text.includes('Изменить язык') || text.includes('Change language');
 
   if (isPayment) {
     userState[chatId].step = 'paymentMenu';
