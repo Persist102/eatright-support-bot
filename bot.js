@@ -30,6 +30,12 @@ const T = {
     payProblem:  "⚠️ To'lov bo'yicha muammo",
     payRedirect: "💬 To'lov masalasi bo'yicha to'g'ridan-to'g'ri murojaat qiling:",
     payBtn:      "💬 Admin bilan bog'lanish",
+
+    docsBtn:     '📄 Huquqiy hujjatlar',
+    docsTitle:   "📄 *EatRight — Huquqiy hujjatlar*\n\nQuyidagi hujjatlarni o'qib chiqishingiz mumkin:",
+    docsPrivacy: '🔒 Maxfiylik Siyosati',
+    docsTerms:   '📋 Foydalanish Shartlari',
+    docsSupport: '💬 Qo\'llab-quvvatlash',
   },
   ru: {
     welcome:     '👋 Добро пожаловать в бот поддержки EatRight!\n\nВыберите один из вариантов:',
@@ -44,6 +50,12 @@ const T = {
     payProblem:  '⚠️ Проблема с оплатой',
     payRedirect: '💬 По вопросам оплаты обращайтесь напрямую:',
     payBtn:      '💬 Связаться с администратором',
+
+    docsBtn:     '📄 Правовые документы',
+    docsTitle:   '📄 *EatRight — Правовые документы*\n\nВы можете ознакомиться со следующими документами:',
+    docsPrivacy: '🔒 Политика конфиденциальности',
+    docsTerms:   '📋 Условия использования',
+    docsSupport: '💬 Поддержка',
   },
   en: {
     welcome:     '👋 Welcome to EatRight Support Bot!\n\nPlease choose an option:',
@@ -58,6 +70,12 @@ const T = {
     payProblem:  '⚠️ Payment issue',
     payRedirect: '💬 For payment issues please contact us directly:',
     payBtn:      '💬 Contact admin',
+
+    docsBtn:     '📄 Legal Documents',
+    docsTitle:   '📄 *EatRight — Legal Documents*\n\nYou can read the following documents:',
+    docsPrivacy: '🔒 Privacy Policy',
+    docsTerms:   '📋 Terms of Service',
+    docsSupport: '💬 Support',
   },
 };
 
@@ -78,6 +96,7 @@ function mainKeyboard(lang) {
         keyboard: [
           [{ text: '🐛 Проблема с приложением' }, { text: '💳 Вопрос по оплате' }],
           [{ text: '💡 Предложение' },             { text: '🌐 Изменить язык' }],
+          [{ text: '📄 Правовые документы' }],
         ],
         resize_keyboard: true,
       },
@@ -89,6 +108,7 @@ function mainKeyboard(lang) {
         keyboard: [
           [{ text: '🐛 App issue' },    { text: '💳 Payment question' }],
           [{ text: '💡 Suggestion' },   { text: '🌐 Change language' }],
+          [{ text: '📄 Legal Documents' }],
         ],
         resize_keyboard: true,
       },
@@ -99,6 +119,7 @@ function mainKeyboard(lang) {
       keyboard: [
         [{ text: '🐛 Ilova muammosi' }, { text: "💳 To'lov masalasi" }],
         [{ text: '💡 Taklif' },         { text: "🌐 Tilni o'zgartirish" }],
+        [{ text: '📄 Huquqiy hujjatlar' }],
       ],
       resize_keyboard: true,
     },
@@ -206,6 +227,7 @@ bot.on('message', (msg) => {
   const isBug     = text === '🐛 Ilova muammosi'  || text === '🐛 Проблема с приложением' || text === '🐛 App issue';
   const isSuggest = text === '💡 Taklif'           || text === '💡 Предложение' || text === '💡 Suggestion';
   const isLang    = text.includes('Tilni') || text.includes('Изменить язык') || text.includes('Change language');
+  const isDocs    = text === '📄 Huquqiy hujjatlar' || text === '📄 Правовые документы' || text === '📄 Legal Documents';
 
   if (isPayment) {
     userState[chatId].step = 'paymentMenu';
@@ -215,6 +237,19 @@ bot.on('message', (msg) => {
   if (isLang) {
     userState[chatId].step = 'chooseLang';
     return bot.sendMessage(chatId, t.langPrompt, langKeyboard());
+  }
+
+  if (isDocs) {
+    return bot.sendMessage(chatId, t.docsTitle, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: t.docsPrivacy, url: 'https://eatrightuz.netlify.app/privacy.html' }],
+          [{ text: t.docsTerms,   url: 'https://eatrightuz.netlify.app/terms.html' }],
+          [{ text: t.docsSupport, url: 'https://eatrightuz.netlify.app/support.html' }],
+        ],
+      },
+    });
   }
 
   if (isBug || isSuggest) {
